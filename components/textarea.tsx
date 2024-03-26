@@ -3,10 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 interface TextAreaProps {
     placeholder?: string;
     children?: string;
+    className?: string;
     onChange?: (value: string) => void;
 }
 
-export default function TextArea({ placeholder = '', children = '', onChange }: TextAreaProps) {
+export default function TextArea({ placeholder = '', children = '', className = '', onChange }: TextAreaProps) {
   const [value, setValue] = useState(children);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -32,7 +33,7 @@ export default function TextArea({ placeholder = '', children = '', onChange }: 
   return (
     <textarea
       ref={textAreaRef}
-      className="resize-none bg-transparent outline-none p-2 w-full overflow-hidden placeholder:text-black"
+      className={`resize-none bg-transparent outline-none p-2 w-full overflow-hidden placeholder:text-black ${className}`}
       placeholder={placeholder}
       value={value}
       onChange={handleChange}

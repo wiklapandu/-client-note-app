@@ -57,10 +57,17 @@ export default function Home() {
           return <Card 
             note={note} 
             color={note.color || 'card-orange'} 
-            key={key} 
+            key={key}
             onClick={(note: Note) => {
               SaveNote(note, key, setNotes);
-            }} />;
+            }}
+            onDelete={(note) => {
+              const filterNote = notes.filter((_, index) => index != key);
+              setNotes(filterNote);
+
+              localStorage.setItem('notes', JSON.stringify(filterNote));
+            }}
+            />;
         })}
       </div>
     </LayoutDefault>
