@@ -12,7 +12,7 @@ export default function LayoutDefault({ children, pushNote }: {children: any, pu
                         <li>
                             <DropDown icon={<IconPlus/>} onClickChild={(color: string) => {
                                 const note: Note = {
-                                    title: 'untitled',
+                                    title: 'Untitled',
                                     content: '',
                                     status: 'open',
                                     author: 'wikla',

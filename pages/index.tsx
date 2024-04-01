@@ -2,6 +2,7 @@ import Card from "@/components/card";
 import LayoutDefault from "@/components/layouts/default";
 import Note from "@/interfaces/note";
 import { useEffect, useState } from "react";
+import Head from 'next/head';
 
 const SaveNote = (note: Note, index: any, setNotes: CallableFunction) => {
   setNotes((prev: Note[]) => {
@@ -35,6 +36,9 @@ export default function Home() {
     <LayoutDefault pushNote={(note: Note) => {
       setNotes((prev) => [...prev, note]);
     }}>
+      <Head>
+        <title>Notes</title>
+      </Head>
       <div className="flex mb-12">
         <div className="text-gray-600 md:w-3/12 form border-2 rounded-lg overflow-hidden flex items-center px-4 gap-2 focus-within:ring focus-within:ring-blue-600 focus-within:ring-offset-1 focus-within:border-blue-600">
           <svg

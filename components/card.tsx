@@ -19,6 +19,14 @@ export default function Card({ note, onClick, onDelete, color = 'orange' }: Card
         <div className={`min-h-24 ${color} rounded-lg`}>
           <div className="p-4 text-xl mx-3">
             <div className="flex">
+              <div className="title mb-8">
+                {
+                newNote.edit
+                ? <input className="text-2xl font-medium bg-transparent outline-none" value={newNote.title} onChange={(event) => setNewNote({...newNote, title: event.target.value})} /> 
+                : <h2 className="text-2xl font-medium">{newNote.title}</h2>}
+              </div>
+            </div>
+            <div className="flex">
               <div className="description mb-8 w-full">
                 {
                 newNote.edit ? <TextArea placeholder="Type here..." onChange={(value) => {

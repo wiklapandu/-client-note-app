@@ -33,7 +33,7 @@ export default function TextArea({ placeholder = '', children = '', className = 
   return (
     <textarea
       ref={textAreaRef}
-      className={`resize-none bg-transparent outline-none p-2 w-full overflow-hidden placeholder:text-black ${className}`}
+      className={`resize-none bg-transparent outline-none w-full overflow-hidden placeholder:text-black ${className}`}
       placeholder={placeholder}
       value={value}
       onChange={handleChange}
