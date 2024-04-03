@@ -31,7 +31,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get('http://localhost:3000/note', {
+        const res = await axios.get(`${process.env.API_NOTE}/note`, {
           headers: {
             Authorization: localStorage.getItem('token'),
           }
@@ -68,7 +68,7 @@ export default function Home() {
             setTimeout(() => {
               (async () => {
                 try {
-                  const res = await axios.get('http://localhost:3000/note', {
+                  const res = await axios.get(`${process.env.API_NOTE}/note`, {
                     headers: {
                       Authorization: localStorage.getItem('token'),
                     },
@@ -99,7 +99,7 @@ export default function Home() {
             key={key}
             onClick={(note: Note) => {
               if(note._id) {
-                axios.put(`http://localhost:3000/note/${note._id}`, note, {
+                axios.put(`${process.env.API_NOTE}/note/${note._id}`, note, {
                   headers: {
                     Authorization: localStorage.getItem('token'),
                   }
@@ -116,7 +116,7 @@ export default function Home() {
                     });
                   });
                 } else {
-                  axios.post(`http://localhost:3000/note/`, note, {
+                  axios.post(`${process.env.API_NOTE}/note/`, note, {
                     headers: {
                       Authorization: localStorage.getItem('token'),
                     }
@@ -135,7 +135,7 @@ export default function Home() {
               }
             }}
             onDelete={(note) => {
-              axios.delete(`http://localhost:3000/note/${note._id}`, {
+              axios.delete(`${process.env.API_NOTE}/note/${note._id}`, {
                 headers: {
                   Authorization: localStorage.getItem('token'),
                 }
