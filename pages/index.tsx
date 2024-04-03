@@ -3,6 +3,9 @@ import LayoutDefault from "@/components/layouts/default";
 import Note from "@/interfaces/note";
 import { useEffect, useState } from "react";
 import Head from 'next/head';
+import axios from "axios";
+import { Id, toast, ToastContainer } from "react-toastify";
+import NotFoundComponent from "@/components/notfound";
 
 const SaveNote = (note: Note, index: any, setNotes: CallableFunction) => {
   setNotes((prev: Note[]) => {
@@ -26,10 +29,19 @@ export default function Home() {
   const [notes, setNotes] = useState <Note[]>([]);
 
   useEffect(() => {
-    const data = localStorage.getItem('notes');
-    const decode = data ? JSON.parse(data) : [];
+    (async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/note', {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          }
+        })
+        setNotes(res.data.data);
+      } catch(error) {
+        console.log('errorGet:', error);
+      }
 
-    setNotes(decode);
+    })();
   }, [])
 
   return (
@@ -50,30 +62,101 @@ export default function Home() {
             <path d="M10 18a7.952 7.952 0 004.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0018 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z" />
           </svg>
 
-          <input type="text" placeholder="Seach here..." className="outline-none border-0 py-2 w-full"/>
+          <input type="text" placeholder="Seach here..." onChange={(event) => {
+            event.preventDefault();
+            
+            setTimeout(() => {
+              (async () => {
+                try {
+                  const res = await axios.get('http://localhost:3000/note', {
+                    headers: {
+                      Authorization: localStorage.getItem('token'),
+                    },
+                    params: {
+                      search: event.target.value,
+                    }
+                  })
+                  
+                  setNotes(res.data.data);
+                } catch(error) {
+                  console.log('errorGet:', error);
+                }
+  
+              })();
+            }, 800)
+
+          }} className="outline-none border-0 py-2 w-full"/>
         </div>
       </div>
       <div className="flex mb-8">
         <h1 className="text-5xl font-medium">Notes</h1>
       </div>
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-3">
-        {notes?.map((note, key) => {
+        {notes.length >= 1 ? notes.map((note, key) => {
           return <Card 
             note={note} 
             color={note.color || 'card-orange'} 
             key={key}
             onClick={(note: Note) => {
-              SaveNote(note, key, setNotes);
+              if(note._id) {
+                axios.put(`http://localhost:3000/note/${note._id}`, note, {
+                  headers: {
+                    Authorization: localStorage.getItem('token'),
+                  }
+                })
+                  .then((res) => {
+                    toast.success(res.data.message, {
+                      autoClose: 2000,
+                    });
+                    SaveNote(note, key, setNotes);
+                  })
+                  .catch((xhr: any) => {
+                    toast.error(xhr.response.data.message, {
+                      autoClose: 2000,
+                    });
+                  });
+                } else {
+                  axios.post(`http://localhost:3000/note/`, note, {
+                    headers: {
+                      Authorization: localStorage.getItem('token'),
+                    }
+                  })
+                    .then((res) => {
+                      toast.success(res.data.message, {
+                        autoClose: 2000,
+                      });
+                      SaveNote(res.data.note, key, setNotes);
+                    })
+                    .catch((xhr: any) => {
+                      toast.error(xhr.response.data.message, {
+                        autoClose: 2000,
+                      });
+                    });
+              }
             }}
             onDelete={(note) => {
-              const filterNote = notes.filter((_, index) => index != key);
-              setNotes(filterNote);
-
-              localStorage.setItem('notes', JSON.stringify(filterNote));
+              axios.delete(`http://localhost:3000/note/${note._id}`, {
+                headers: {
+                  Authorization: localStorage.getItem('token'),
+                }
+              }).then((res) => {
+                const message = res.data.message;
+                const filterNote = notes.filter((_, index) => index != key);
+                setNotes(filterNote);
+                toast.success(message, {
+                  autoClose: 2000,
+                })
+              }).catch((xhr) => {
+                toast.error(xhr.response.data.message, {
+                  autoClose: 2000
+                })
+              });
             }}
             />;
-        })}
+        }) : <NotFoundComponent />}
       </div>
+      
+      <ToastContainer />
     </LayoutDefault>
   );
 }

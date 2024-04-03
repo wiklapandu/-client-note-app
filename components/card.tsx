@@ -1,5 +1,5 @@
 import Note from "@/interfaces/note";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextArea from "./textarea";
 import moment from "moment";
 
@@ -14,6 +14,10 @@ interface CardProps {
 export default function Card({ note, onClick, onDelete, color = 'orange' }: CardProps)
 {
     const [newNote, setNewNote] = useState <Note>(note);
+
+    useEffect(() => {
+      setNewNote(note);
+    }, [note]);
 
     return (
         <div className={`min-h-24 ${color} rounded-lg`}>
